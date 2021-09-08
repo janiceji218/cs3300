@@ -1,0 +1,77 @@
+<html>
+
+<body>
+  <p id="name">
+    CS/INFO 3300 | Homework 1 | Janice Ji (jyj9)
+  </p>
+  <p id="p1">
+    Problem 1:
+  <pre>
+      a)
+      &#9;Marks: blocks outlining the shape of each state's county.
+      &#9;Visual Channels: Each block has variance in color hue that corresponds with the legend in the bottom left.
+      b)
+      &#9;Marks: Blue rectangles
+      &#9;Visual Channels: Varying the vertically aligned length, and horizontally aligned position of the rectangles. Setting an appropriate number of rectangles that affects the horizontal length of each rectangle.
+      c) 
+      &#9;Marks: Small circles/dots
+      &#9;Visual Channels: Varying both the color hue of the circles. Varying the horizontal and vertical alignment of the circles. Depending on the horizontal and vertical alignment of the circles, overlapping circles will result in varying color opacity.
+    </pre>
+  <script>
+
+  </script>
+  </p>
+  <p id="p2">
+    Problem 2:
+  <pre>
+      &#9;a) number: yes. NaN (not a number) is a Number. Even though it's literally"not a number". This is weird. I don't like this.
+      &#9;b) int: no, but there is technically BigInt. ints would fall under the Number type instead.
+      &#9;c) unicode: no, Unicode is just a Number anyways.
+      &#9;d) array: no, arrays are under objects
+      &#9;e) char: no, Javascript doesn't support chars. Instead, they're just single character strings.
+      &#9;f) class: no, a class would fall under functions
+      &#9;g) regex: no, a regex would fall under objects
+      &#9;h) string: yes. Concatenating a string with a number, functions, objects, etc. will output a string. This is really strange as you can literally concatenate a string with a class which doesn't really make much sense.
+      &#9;i) boolean: yes
+      &#9;j) object: yes
+      &#9;k) null: no, null would fall under object
+      &#9;l) function: yes
+  </pre>
+  <script>
+    console.log("2.a) " + typeof (2));
+    console.log("2.h) " + typeof ("I am a string!"));
+    console.log("2.i) " + typeof (true));
+    console.log("2.j) " + typeof (null));
+    console.log("2.l) " + typeof (() => "function!"));
+  </script>
+  </p>
+  <p id="p3">
+    Problem 3:
+  <pre>
+    &#9;Type Coercion: the automatic or implicit type conversion from one data type to another.
+    &#9;Weird Type Coercion (why JavaScript?):
+    &#9;1. You can concatenate a string with a class or function without throwing an error. This does not make much logical sense as Python would throw an error due to the unsupported operand to concatenate a string with a class/function.
+    &#9;2. The output type of adding two arrays together is a string. This is unexpected adding two arrays together would lead to a concatenated array in Python, not a string.
+    <script>
+      class myClass {
+        constructor() {
+          this.name = 'cs3300';
+        }
+      }
+      console.log('3.1) hi ' + myClass);
+      console.log('3.2) ' + ([1] + [2]) + ', ' + typeof ([1] + [2]));
+      console.log();
+    </script>
+    </pre>
+  </p>
+  <p id="p4">
+    Problem 4:
+  <pre>
+    Late and Unreadable Assignment Policy: Late work, unreadable work, and work submitted in incorrect formats will
+    receive a 0 score. We do however get 5 slip days to use tobextend deadlines if we need to. The 2 lowest homework
+    grades will also be dropped, including 0 scores, as a last resort (thank you!).
+  </pre>
+  </p>
+</body>
+
+</html>
