@@ -1,0 +1,156 @@
+<html>
+
+<head>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+  <h3>
+    Janice Ji (jyj9)
+  </h3>
+  <p id="problem1">Problem 1:
+    <br />
+    <svg id="p1" height="300" width="300" style="background: white; border: 1px solid lightgray"></svg>
+
+    <script>
+
+      let svg = d3.select('svg#p1');
+      let width = svg.attr('width');
+      let height = svg.attr('height');
+
+      svg.append("circle")
+        .attr("cx", 150)
+        .attr("cy", 150)
+        .attr("r", 4)
+        .attr("fill", "lightpink");
+
+      svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .attr("font-size", "20px")
+        .attr("x", width / 2.)
+        .attr("y", height / 2.)
+        .attr("font-family", "Verdana")
+        .text("INFO3300");
+
+      svg.append("rect")
+        .attr("x", 10)
+        .attr("y", 40)
+        .attr("width", 80)
+        .attr("height", 50)
+        .attr("fill", "limegreen")
+        .attr("stroke", "magenta");
+
+      svg.append("rect")
+        .attr("x", 200)
+        .attr("y", 200)
+        .attr("width", 85)
+        .attr("height", 90)
+        .attr("fill", "lavender")
+        .attr("stroke", "skyblue");
+
+      svg.append("rect")
+        .attr("x", 60)
+        .attr("y", 175)
+        .attr("width", 110)
+        .attr("height", 80)
+        .attr("fill", "cyan")
+        .attr("stroke", "yellow");
+
+
+
+    </script>
+
+  </p>
+
+  <p id="problem2">
+    Problem 2:
+    <br />
+    <svg id="p2" height="360" width="360" style="background: white; border: 1px solid lightgray"></svg>
+
+    <script>
+      data = [{ "x": 1.0, "y": 9.0 }, { "x": 1.5, "y": 6.0 }, { "x": 2.5, "y": 4.0 }, { "x": 4.0, "y": 2.0 }, { "x": 5.0, "y": 1.6 }, { "x": 6.0, "y": 2.4 }, { "x": 7.0, "y": 3.0 }, { "x": 8.0, "y": 3.4 }, { "x": 9.0, "y": 3.6 }];
+
+      svg = d3.select('svg#p2');
+      width = svg.attr('width');
+      height = svg.attr('height');
+
+      let xScale = d3.scaleLinear().domain([0, 10]).range([20, width - 20]);
+      let yScale = d3.scaleLinear().domain([0, 10]).range([20, height - 20]);
+
+      // grid lines
+      for (let i = 20; i <= 340; i += 32) {
+        svg.append("line")
+          .attr("x1", i)
+          .attr("x2", i)
+          .attr("y1", 20)
+          .attr("y2", 340)
+          .style("stroke", "lightgrey")
+          .style("stroke-width", 1.5);
+
+        svg.append("line")
+          .attr("x1", 20)
+          .attr("x2", 340)
+          .attr("y1", i)
+          .attr("y2", i)
+          .style("stroke", "lightgrey")
+          .style("stroke-width", 1.5);
+      };
+
+      // axis labels
+      let j = 0;
+      for (let i = 20; i <= 340; i += 160) {
+        svg.append("text")
+          .attr("text-anchor", "middle")
+          .attr("dominant-baseline", "hanging")
+          .attr("x", i)
+          .attr("y", 340 + 2.5)
+          .attr("font-family", "Arial")
+          .text(j);
+
+        svg.append("text")
+          .attr("text-anchor", "end")
+          .attr("dominant-baseline", "middle")
+          .attr("x", 20 - 2.5)
+          .attr("y", 360 - i)
+          .attr("font-family", "Arial")
+          .text(j);
+        j += 5;
+      }
+
+      // data points
+      data.forEach((d, i) => {
+        svg.append("circle")
+          .attr("cx", xScale(d.x))
+          .attr("cy", height - yScale(d.y))
+          .attr("r", 10)
+          .attr("fill", "purple");
+      });
+    </script>
+
+  </p>
+
+  <ul id=problem3>
+
+    Problem 3:
+    <br />
+    <li>
+      A. Sequential. I think this is an effective color scale as it has limited hue (2), and lower values => darker
+      colors while higher values => lighter colors so luminosity is effectively incorporated as well.
+    </li>
+    <li>
+      B. This is not an effective color scale as while it does have an clear middle color (blue), the color scale
+      doesn't include a neutral middle with saturated ends. The blue middle is clearly more saturated than the yellow
+      left end
+    </li>
+    <li>
+      D. I would not recommend using the rainbow scale as it would be confusing to correlate the different hues of the
+      rainbow with lower or higher age. A sequential scale would be much more effective with the lighter hue correlating
+      to lower age and darker hue correlating to higher age (or vice versa).
+    </li>
+
+  </ul>
+
+</body>
+
+</html>
