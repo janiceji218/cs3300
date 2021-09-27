@@ -1,0 +1,116 @@
+<html>
+
+<head>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+  <h3>
+    Janice Ji (jyj9)
+  </h3>
+
+  <p id="problem1">Problem 1:
+    <br />
+    <svg id="p1" height="400" width="400" style="background: white;">
+    </svg>
+    <svg id="p2" height="400" width="400" style="background: white;"></svg>
+
+    <script>
+      let svg1 = d3.select("svg#p1");
+      const width1 = svg1.attr("width");
+      const height1 = svg1.attr("height");
+      const margin = { top: 5, right: 5, bottom: 5, left: 5 };
+
+      const chartWidth = width1 - margin.left - margin.right;
+      const chartHeight = height1 - margin.top - margin.bottom;
+      d3.json('./diamonds.json').then((data) => {
+
+        const caratExtent = d3.extent(data, d => d['carat']);
+        const caratScale = d3.scaleLinear().domain(caratExtent).range([5, height1 - 5]);
+
+        const priceExtent = d3.extent(data, d => d['price']);
+        const priceScale = d3.scaleLinear().domain(priceExtent).range([width1 - 5, 5]);
+
+        let leftAxis = d3.axisLeft(priceScale);
+
+        for (let i = margin.left; i < width1 - margin.right; i += chartWidth / 3) {
+          svg1.append("line")
+            .attr("x1", i)
+            .attr("x2", i)
+            .attr("y1", margin.top)
+            .attr("y2", height1 - margin.top)
+            .style("stroke", "lightgrey")
+            .style("stroke-width", 1);
+
+        }
+
+        for (let i = height1 - margin.bottom; i > margin.bottom; i -= chartHeight / 20) {
+          svg1.append("line")
+            .attr("x1", margin.left)
+            .attr("x2", width1 - margin.right)
+            .attr("y1", i)
+            .attr("y2", i)
+            .style("stroke", "lightgrey")
+            .style("stroke-width", 1);
+        }
+        data.forEach((d, i) => {
+          svg1.append("circle")
+            .attr("cx", Math.floor(caratScale(d["carat"])))
+            .attr("cy", Math.floor(priceScale(d["price"])))
+            .attr("r", 3)
+            .attr("fill", "darkblue")
+            .attr("opacity", 0.4);
+        });
+
+
+        // Part D
+        let svg2 = d3.select("svg#p2");
+        const colorScale = d3.scaleLinear().domain([0, 8]).range([5, height1 - 5]);
+
+        for (let i = height1 - margin.bottom; i > margin.bottom; i -= chartHeight / 20) {
+          svg1.append("line")
+            .attr("x1", margin.left)
+            .attr("x2", width1 - margin.right)
+            .attr("y1", i)
+            .attr("y2", i)
+            .style("stroke", "lightgrey")
+            .style("stroke-width", 1);
+        }
+
+        for (let i = margin.left; i < width1 - margin.right; i += chartWidth / 8) {
+          svg1.append("line")
+            .attr("x1", i)
+            .attr("x2", i)
+            .attr("y1", margin.top)
+            .attr("y2", height1 - margin.top)
+            .style("stroke", "lightgrey")
+            .style("stroke-width", 1);
+
+        }
+
+      });
+
+
+
+    </script>
+
+  </p>
+
+  <p id="problem2">Problem 2:
+    <br />
+    <svg id="p2" height="300" width="300" style="background: white; border: 1px solid lightgray"></svg>
+
+    <script>
+
+      d3.csv("./NCAA_shots.csv", d3.autoType) // add d3.autoType that automatically types everything (strings, nums, etc)
+        .then((data) => {
+
+        });
+
+    </script>
+
+  </p>
+
+</body>
+
+</html>
