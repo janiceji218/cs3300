@@ -1,0 +1,247 @@
+<html>
+<style>
+  .legend span {
+    margin-right: 10px;
+  }
+
+  .gridlines line {
+    stroke: #bbb;
+  }
+
+  .gridlines .domain {
+    stroke: none;
+  }
+</style>
+
+<head>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+  <h3>
+    Janice Ji (jyj9)
+  </h3>
+
+  <p id="problem1">Problem 1:
+    <br />
+    <svg id="p1" height="420" width="420" style="background: white;">
+    </svg>
+
+  <div>
+    <input type="range" id="colorslider" name="colorslider" min="0" max="200" value="80" step="1">
+  </div>
+  <script>
+    let svg = d3.select('svg#p1');
+    const width = svg.attr("width");
+    const height = svg.attr("height");
+    var colors = [];
+    for (let i = -160; i <= 160; i += 16) {
+      for (let j = -160; j <= 160; j += 16) {
+        colors.push({
+          'a': i,
+          'b': j
+        });
+      }
+    }
+    // console.log(colors.length);
+    let aScale = d3.scaleLinear().domain([-160, 160]).range([10, width - 10]);
+    let bScale = d3.scaleLinear().domain([-160, 160]).range([height - 10, 10]);
+
+    function showCircles(luminosity) {
+      svg.selectAll("circle").data(colors)
+        .join(
+          enter => {
+            enter.append("circle")
+              .attr("r", 10)
+              .attr("fill", d => d3.lab(luminosity, d['a'], d['b']))
+              .attr("cx", d => aScale(d['a']))
+              .attr("cy", d => bScale(d['b']));
+          },
+          update => update
+            .attr("cx", d => aScale(d['a']))
+            .attr("cy", d => bScale(d['b']))
+            .attr("fill", d => d3.lab(luminosity, d['a'], d['b'])),
+          exit => {
+            exit.remove();
+          }
+        );
+
+    }
+    showCircles(80);
+    d3.select("#colorslider").on('input', function () {
+      // console.log(this.value);
+      showCircles(this.value);
+    });
+  </script>
+
+  </p>
+  <p id="problem2">Problem 2:
+    <br />
+    <svg id="p2" height="500" width="800" style="margin-top:50px">
+      <text id="label" x="390" y="5" text-anchor="end" alignment-baseline="hanging"></text>
+    </svg>
+
+    <script>
+      const wines = d3.select('svg#p2');
+      //const wines = d3.select("svg#scatterplot");
+      const width2 = wines.attr("width");
+      const height2 = wines.attr("height");
+      const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+      const chartWidth = width2 - margin.left - margin.right;
+      const chartHeight = height2 - margin.top - margin.bottom;
+
+      let annotations = wines.append("g").attr("id", "annotations");
+      let chartArea = wines.append("g").attr("id", "points")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+      d3.select("#label").raise();
+
+      d3.json('./wines.json').then((data) => {
+        //console.log(typeof (data));
+        let data_removed = 0;
+        data.forEach((d, i) => {
+          // We noticed that there were commas and $ which broke the type coercion from string to number
+          d['price'] = Number(d['price'].replace(/,/g, "").replace(/\$/g, ""));
+        });
+        let datacopy = data;
+        data = data.filter(function (d) { return d.points >= 0 && d.points <= 100 && d.region_1 !== "NA" && d.region_1 !== "N/A" && d.country !== "NA" && d.country !== "N/A" });
+        data.forEach(d => {
+          console.log(d['points'] + ", " + d['price']);
+        })
+        //console.log(data.length);
+        console.log(datacopy.length - data.length);
+
+        const priceExtent = d3.extent(data, d => d.price);
+        //console.log(priceExtent);
+        const priceScale = d3.scaleLog().domain(priceExtent).range([0, chartWidth]);
+        const pointsExtent = d3.extent(data, d => d.points);
+        const pointsScale = d3.scaleLinear().domain(pointsExtent).range([chartHeight, 0]);
+
+        // Y Axis
+        let leftAxis = d3.axisLeft(pointsScale);
+        //.tickFormat(d3.format("$.0s"))
+        let leftGridlines = d3.axisLeft(pointsScale)
+          .tickSize(-chartWidth - 10)
+          .tickFormat("");
+
+        annotations.append("g")
+          .attr("class", "y axis")
+          .attr("transform", `translate(${margin.left - 10},${margin.top})`)
+          .call(leftAxis)
+        annotations.append("g")
+          .attr("class", "y gridlines")
+          .attr("transform", `translate(${margin.left - 10},${margin.top})`)
+          .call(leftGridlines);
+
+        // X axis
+        let bottomAxis = d3.axisBottom(priceScale)
+          .tickFormat(d3.format("$.0s"));
+        let bottomGridlines = d3.axisBottom(priceScale)
+          .tickSize(-chartHeight - 10)
+          .tickFormat("");
+        annotations.append("g")
+          .attr("class", "x axis")
+          .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
+          .call(bottomAxis);
+        annotations.append("g")
+          .attr("class", "x gridlines")
+          .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
+          .call(bottomGridlines);
+
+        function jitter() {
+          return Math.random() * 8 - 4;
+        }
+        const tasterScale = d3.scaleOrdinal(d3.schemeCategory10);
+        data.forEach((d, i) => {
+
+          let circle = chartArea.append("circle")
+            .attr("cy", jitter() + pointsScale(d.points))
+            .attr("cx", jitter() + priceScale(d.price))
+            .attr("r", 6)
+            .attr("opacity", 0.6)
+            .attr("fill", tasterScale(d.taster_name))
+            .attr("label", d.title);
+
+          circle.on("mouseover", function () {
+            d3.select(this)
+              .transition().duration(200)
+              .attr("stroke", "black")
+              .attr("stroke-width", 3)
+              .attr("r", 8)
+              .attr("fill", lighten(tasterScale(d.taster_name)));
+
+            d3.select("#label").text(d['title']).attr('x', width2 - 10).attr('y', 0);
+
+          });
+
+          circle.on("mouseout", function () {
+            d3.select(this)
+              .transition().duration(200)
+              .attr("stroke-width", 0)
+              .attr("r", 6)
+              .attr("fill", tasterScale(d.taster_name));
+
+            d3.select("#label").text("");
+
+          });
+        });
+
+        function lighten(color) {
+
+          let hclColor = d3.hcl(color);
+          let luma = Math.min(130, hclColor.l + 30);
+          return d3.rgb(d3.hcl(hclColor.h, hclColor.c, luma));
+
+        }
+        const mySet = new Set();
+        data.forEach(d => {
+          mySet.add(d.taster_name);
+        });
+        mySet.forEach(v => {
+          console.log(v);
+        })
+        console.log(mySet.size);
+
+
+        data.forEach(d => {
+          console.log("person: " + d.taster_name + ", color: " + tasterScale(d.taster_name))
+        });
+        // mySet2.forEach(v => {
+        //   console.log(v);
+        // })
+        // console.log(mySet2.size);
+
+      });
+
+    </script>
+  <div>
+    <span id="taster1" style="font-family: Verdana; font-weight:lighter; font-size:small; color:#ff7f0e">Anna Lee C.
+      Iijima</span>
+    <span id="taster2" style="font-family: Verdana; font-weight:lighter; font-size:small; color: #2ca02c">Paul
+      Gregutt</span>
+    <span id="taster3" style="font-family: Verdana; font-weight:lighter; font-size:small; color:#d62728">Sean P.
+      Sullivan</span>
+    <span id="taster4" style="font-family: Verdana; font-weight:lighter; font-size:small; color: #8c564b">Joe
+      Czerwinski</span>
+    <span id="taster5" style="font-family: Verdana; font-weight:lighter; font-size:small; color: #e377c2">Susan
+      Kostrzewa</span>
+    <span id="taster6" style="font-family: Verdana; font-weight:lighter; font-size:small; color: #7f7f7f">Lauren
+      Buzzeo</span>
+    <span id="taster7" style="font-family: Verdana; font-weight:lighter; font-size:small; color: #9467bd">Virginie
+      Boone</span>
+    <span id="taster8" style="font-family: Verdana; font-weight:lighter; font-size:small; color: #bcbd22">Michael
+      Schachner</span>
+  </div>
+  <br>
+  Filtered out items with points not within 0 and 100. Filtered out items with country and/or region equal to "NA"
+  or
+  "N/A".
+
+  Removed: 84 items after filtering
+
+  <br>
+  Rational for design...
+  </p>
+
+</body>
+
+</html>
